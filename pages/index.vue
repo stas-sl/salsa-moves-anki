@@ -49,7 +49,7 @@ reloadVideos()
           <div v-for="file in filesToDisplay" :key="file.sha" class="video-item">
             <h2>{{ file.name.replace(/\.[^/.]+$/, "").slice(1) }}</h2>
             <video autoplay muted controls loop
-              :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves-anki/refs/heads/main/moves/${file.name}`"></video>
+              :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/moves/${file.name}`"></video>
           </div>
         </div>
 
