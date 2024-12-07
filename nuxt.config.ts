@@ -6,11 +6,15 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   modules: ["vuetify-nuxt-module"],
+  ssr: false,
   vuetify: {
     moduleOptions: {
       /* module specific options */
     },
     vuetifyOptions: {
+      theme: {
+        defaultTheme: 'dark'
+      }
       // blueprint: md3
       /* vuetify options */
     }
