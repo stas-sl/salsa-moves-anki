@@ -1,9 +1,9 @@
 // Composables
 import { makeComponentProps } from 'vuetify/lib/composables/component.mjs'
 import { makeDimensionProps, useDimension } from 'vuetify/lib/composables/dimensions'
-import { useProxiedModel } from 'vuetify/lib//composables/proxiedModel'
-import { makeTagProps } from 'vuetify/lib//composables/tag'
-import { makeTransitionProps, MaybeTransition } from 'vuetify/lib//composables/transition'
+import { useProxiedModel } from 'vuetify/lib/composables/proxiedModel'
+import { makeTagProps } from 'vuetify/lib/composables/tag'
+import { makeTransitionProps, MaybeTransition } from 'vuetify/lib/composables/transition'
 
 // Directives
 import intersect from 'vuetify/lib/directives/intersect'
