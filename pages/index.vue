@@ -1,7 +1,7 @@
 <script setup>
 import files from '~/static/files.json'
 const filesToDisplay = ref([])
-const videoCount = ref(5)
+const videoCount = ref(20)
 
 function reloadVideos() {
   filesToDisplay.value = [...files].sort(() => 0.5 - Math.random()).slice(0, videoCount.value)
@@ -11,23 +11,14 @@ function reloadAll() {
   filesToDisplay.value = files
 }
 
-reloadVideos()
+reloadAll()
 
 </script>
 
 <template>
-  <!-- <v-responsive class="border rounded" max-height="300"> -->
   <v-app>
-    <!-- <v-app-bar title="App bar"></v-app-bar> -->
-
-    <!-- <v-navigation-drawer>
-        <v-list>
-          <v-list-item title="Navigation drawer"></v-list-item>
-        </v-list>
-      </v-navigation-drawer> -->
-
     <v-main>
-      <v-container>
+      <v-container fluid>
 
         <h1>Salsa moves</h1>
 
@@ -35,51 +26,63 @@ reloadVideos()
 
         <br>
         <br>
-        <!-- <v-responsive class="ma-0 pa-0" width="100px"> -->
         <v-text-field label="Num" variant="outlined" type="number" v-model="videoCount"></v-text-field>
-        <!-- </v-responsive> -->
-        <!-- <br> -->
-        <!-- <br> -->
 
-        <v-btn variant="elevated" @click="reloadAll" >Load all</v-btn>
+        <v-btn variant="elevated" @click="reloadAll">Load all</v-btn>
         <br>
         <br>
 
-        <div class="video-container">
-          <div v-for="file in filesToDisplay" :key="file.sha" class="video-item">
-            <h2>{{ file.name.replace(/\.[^/.]+$/, "").slice(1) }}</h2>
-            <video autoplay muted controls loop
-              :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/moves/${file.name}`"></video>
-          </div>
-        </div>
+        <v-container fluid class="pa-0">
+          <v-row>
+            <!-- <v-virtual-scroll :items="filesToDisplay" item-height="200">
+              <template v-slot:default="{ item }">
+                <v-col class="pa-2 v-col-auto align-self-center">
+                  <v-card variant="tonal" class="pa-0 ma-0">
+                    <v-card-title class="text-h5 text-center">
+                      {{ item.name.replace(/\.[^/.]+$/, '').slice(1) }}
+                    </v-card-title>
+                    <v-lazy :min-height="200" :options="{ 'threshold': 0.5 }" transition="fade-transition">
+                      <video autoplay muted controls loop class="d-block"
+                        :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/moves/${item.name}`">
+                      </video>
+                    </v-lazy>
+                  </v-card>
+                </v-col>
+              </template>
+</v-virtual-scroll> -->
+
+            <v-col class="pa-2 v-col-auto align-self-center" v-for="file in filesToDisplay" :key="file.sha">
+              <v-card variant="tonal" class="pa-0 ma-0">
+                <v-card-title class="text-h5 text-center">
+                  {{ file.name.replace(/\.[^/.]+$/, '').slice(1) }}
+                </v-card-title>
+                <my-lazy :min-height="200" class="video-card">
+                  <video-player
+                    :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/moves/${file.name}`"
+                    controls loop muted autoplay :playbackRate="1" :enableSmoothSeeking="true" fill />
+                </my-lazy>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
 
       </v-container>
     </v-main>
   </v-app>
-  <!-- </v-responsive> -->
 </template>
 
 <style scoped>
-.video {
-  max-height: 50vh;
-  width: 100%;
-  height: auto;
+.video-card {
+  width: 30vw;
+  /* height: 30vh; */
+  aspect-ratio: 1;
+  /* height: 360px; */
+  /* max-width: 30vw; */
+  /* max-height: 50vh; */
 }
 
-.video-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-}
-
-.video-item {
-  flex: 1 1 calc(30vw - 16px);
-  max-width: 30vw;
-}
-
-.video-item h2 {
-  text-align: center;
-}
+/* .video-js, video {
+  max-width: 30vw !important;
+  max-height: 50vh !important;
+} */
 </style>

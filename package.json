@@ -10,9 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@videojs-player/vue": "^1.0.0",
     "nuxt": "^3.14.1592",
+    "video.js": "^8.21.0",
     "vue": "latest",
     "vue-router": "latest",
+    "vuetify": "^3.7.5",
     "vuetify-nuxt-module": "^0.18.3"
   }
 }
