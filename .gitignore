@@ -1,1 +1,3 @@
-moves/raw/
+.nuxt/
+dist
+node_modules/
