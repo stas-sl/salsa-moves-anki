@@ -1,6 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-
-import { md3 } from "vuetify/blueprints";
+import yaml from "@rollup/plugin-yaml";
 
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
@@ -8,18 +6,20 @@ export default defineNuxtConfig({
   modules: ["vuetify-nuxt-module"],
   ssr: false,
   app: {
-    buildAssetsDir: "/nuxt/"
+    buildAssetsDir: "/nuxt/",
+    head: {
+      title: "Salsa Moves"
+    }
   },
   vuetify: {
-    moduleOptions: {
-      /* module specific options */
-    },
+    moduleOptions: {},
     vuetifyOptions: {
       theme: {
         defaultTheme: "dark"
       }
-      // blueprint: md3
-      /* vuetify options */
     }
+  },
+  vite: {
+    plugins: [yaml()]
   }
 });
