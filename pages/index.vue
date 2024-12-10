@@ -5,6 +5,7 @@ import { VChip } from "vuetify/components"
 import files from '~/static/files.json'
 import descriptions from '~/static/descriptions.json'
 
+const mediaUrl = "https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/media/moves/"
 const filesToDisplay = ref([])
 const videoCount = ref(20)
 const isMenuOpen = ref(false)
@@ -112,7 +113,7 @@ reloadAll()
                 </v-card-title>
                 <my-lazy class="video-card">
                   <video-player
-                    :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/moves/${file.name}`"
+                    :src="`${mediaUrl}${file.name}`"
                     loop controls autoplay="muted" responsive :playbackRate="1" :enableSmoothSeeking="true" fill
                     playsinline @ready="$event.target.player.userActive(false)" />
                 </my-lazy>
@@ -136,7 +137,7 @@ reloadAll()
           <!-- <my-lazy class="video-card"> -->
           <div style="width: 50dvw; aspect-ratio: 1;">
             <video-player
-              :src="`https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/moves/${menuMove}.webm`"
+              :src="`${mediaUrl}${menuMove}.webm`"
               loop controls autoplay="muted" responsive :playbackRate="1" :enableSmoothSeeking="true" fill playsinline
               @ready="$event.target.player.userActive(false)" />
           </div>
