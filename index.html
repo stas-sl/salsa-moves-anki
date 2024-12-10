@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salsa moves</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+    }
+
+    video {
+      max-height: 50vh;
+      width: 100%;
+      height: auto;
+    }
+
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video-item {
+      flex: 1 1 calc(30vw - 16px);
+      max-width: 30vw;
+    }
+
+    .video-item h2 {
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Salsa moves</h1>
+
+  <div id="app">
+    <button @click="reloadVideos">Load some random videos</button>
+    <input v-model="videoCount" type="number" min="1" placeholder="num" style="width: 30px; margin-left: 10px;">
+    <br>
+    <br>
+    <button @click="reloadAll">Load all videos</button>
+    <div class="video-container">
+      <div v-for="file in files" :key="file.sha" class="video-item">
+        <h2>{{ file.name.replace(/\.[^/.]+$/, "") }}</h2>
+        <video autoplay muted controls loop
+          :src="`https://github.com/stas-sl/salsa-moves-anki/raw/refs/heads/main/moves/${file.name}`"></video>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
+
+<script type="module">
+  import { createApp, ref, onMounted } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+  async function getFileList() {
+    // const url = 'https://api.github.com/repos/stas-sl/salsa-moves-anki/contents/moves/?ref=main';
+    const url = 'files.json';
+
+    const response = await fetch(url);
+
+    if (response.ok) {
+      const files = await response.json();
+      return files;
+    } else {
+      return null;
+    }
+  }
+
+  createApp({
+    setup() {
+      const files = ref([]);
+      const videoCount = ref(20);
+
+      const reloadVideos = async () => {
+        let data = await getFileList();
+        data = data.sort(() => 0.5 - Math.random())
+        data = data.slice(0, videoCount.value)
+        files.value = data
+      };
+
+      const reloadAll = async () => {
+        let data = await getFileList();
+        files.value = data
+      };
+
+      onMounted(async () => {
+        reloadVideos();
+      });
+
+      return {
+        files,
+        videoCount,
+        reloadVideos,
+        reloadAll
+      }
+    }
+  }).mount('#app')
+</script>
