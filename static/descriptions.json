@@ -12,16 +12,16 @@
     "related": "s003"
   },
   "s016": {
-    "related": "s070, s080, s081"
+    "related": "s070,s080,s081"
   },
   "s070": {
-    "related": "s016, s080, s081"
+    "related": "s016,s080,s081"
   },
   "s080": {
-    "related": "s016, s070, s081"
+    "related": "s016,s070,s081"
   },
   "s081": {
-    "related": "s016, s070, s080"
+    "related": "s016,s070,s080"
   },
   "s136": {
     "related": "s190"
@@ -30,13 +30,13 @@
     "related": "s136"
   },
   "s194": {
-    "related": "s072, s119"
+    "related": "s072,s119"
   },
   "s072": {
-    "related": "s119, s194"
+    "related": "s119,s194"
   },
   "s119": {
-    "related": "s072, s194"
+    "related": "s072,s194"
   },
   "s122": {
     "related": "s083"
@@ -51,12 +51,12 @@
     "related": "s178"
   },
   "s117": {
-    "related": "s064, s082"
+    "related": "s064,s082"
   },
   "s064": {
-    "related": "s082, s117"
+    "related": "s117"
   },
   "s082": {
-    "related": "s064, s117"
+    "related": "s117"
   }
 }

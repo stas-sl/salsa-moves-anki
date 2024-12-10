@@ -50,7 +50,6 @@ const MyLazy = genericComponent()({
     const isActive = useProxiedModel(props, 'modelValue')
 
     function onIntersect (isIntersecting: boolean) {
-      console.log(`onIntersect`, isIntersecting)
       // if (isActive.value) return
 
       isActive.value = isIntersecting
