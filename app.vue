@@ -1,17 +1,9 @@
 <script setup>
-function initUID() {
-  const uid = useState("uid");
-  if (!localStorage.getItem("uid")) {
-    localStorage.setItem("uid", crypto.randomUUID());
-  }
-  uid.value = localStorage.getItem("uid");
-}
-
-initUID();
+const { loadMoves, loadMovesState } = useStore()
+loadMoves()
+await loadMovesState()
 </script>
-
 <template>
-  <NuxtRouteAnnouncer />
   <NuxtLayout>
     <NuxtLoadingIndicator />
     <NuxtPage />

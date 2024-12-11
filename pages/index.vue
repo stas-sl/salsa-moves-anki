@@ -2,32 +2,21 @@
 import { ref, h, Fragment } from "vue"
 import { VChip } from "vuetify/components"
 
-import files from '~/static/files.json'
-import descriptions from '~/static/descriptions.json'
-
-const mediaUrl = "https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/media/moves/"
 const filesToDisplay = ref([])
 const videoCount = ref(20)
 const isMenuOpen = ref(false)
 const menuActivator = ref(null)
 const menuMove = ref('')
+const config = useRuntimeConfig()
 
-const filesExtra = computed(() => {
-  return files.map((f) => ({
-    ...f,
-    move: f.name.replace(/\.[^/.]+$/, ''),
-    description: descriptions[f.name.replace(/\.[^/.]+$/, '')]
-  }))
-});
-
-const uid = useState('uid')
+const { uid, moves, movesState, movesCounts, updateMoveState } = useStore()
 
 function reloadVideos() {
-  filesToDisplay.value = [...filesExtra.value].sort(() => 0.5 - Math.random()).slice(0, videoCount.value)
+  filesToDisplay.value = [...moves.value].sort(() => 0.5 - Math.random()).slice(0, videoCount.value)
 }
 
 function reloadAll() {
-  filesToDisplay.value = filesExtra.value
+  filesToDisplay.value = moves.value
 }
 
 function splitByMoves(s) {
@@ -67,7 +56,7 @@ function renderMoveRefs(s) {
   return h(Fragment, null, splitByMoves(s).map((x) => {
     if (x.isMatch) {
       return h(VChip, {
-        size: 'default', variant: 'flat', link: true, class: 'mx-1 mt-n1',
+        size: 'default', variant: 'flat', link: true, class: 'mx-1 mt-n1', density: 'compact',
         onClick: (e) => {
           menuActivator.value = e.target
           isMenuOpen.value = true
@@ -92,7 +81,7 @@ reloadAll()
 
         <h1>Salsa moves</h1>
 
-        <v-btn variant="elevated" @click="reloadVideos">Load some random videos</v-btn>
+        <!-- <v-btn variant="elevated" @click="reloadVideos">Load some random videos</v-btn>
 
         <br>
         <br>
@@ -101,31 +90,63 @@ reloadAll()
         <v-btn variant="elevated" @click="reloadAll">Load all</v-btn>
         <v-btn variant="elevated" @click="menuActivator = $event.target; isMenuOpen = true;">Show dialog</v-btn>
         <br>
-        <br>
-
+        <br> -->
+        <p class="pb-4">
+          Total: {{ movesCounts.total }}<br>
+          New: {{ movesCounts.new }}<br>
+          Learning: {{ movesCounts.learning }}<br>
+          Review: {{ movesCounts.review }}
+        </p>
         <v-row>
           <v-col class="pa-2 v-col-12 v-col-sm-6 v-col-md-4 v-col-lg-3 v-col-xl-2" v-for="file in filesToDisplay"
             :key="file.sha">
-            <v-hover v-slot="{ isHovering, props }">
-              <v-card variant="flat" :color="isHovering ? 'indigo' : undefined" class="pa-0 ma-0" v-bind="props">
-                <v-card-title class="text-h5 text-center" :id="file.move">
-                  {{ file.move }}
-                </v-card-title>
-                <my-lazy class="video-card">
-                  <video-player
-                    :src="`${mediaUrl}${file.name}`"
-                    loop controls autoplay="muted" responsive :playbackRate="1" :enableSmoothSeeking="true" fill
-                    playsinline @ready="$event.target.player.userActive(false)" />
-                </my-lazy>
-                <v-card-text v-if="file.description">
-                  <p v-if="file.description?.text" v-html="file.description?.text"></p>
-                  <p v-if="file.description?.related">
-                    <span class="text-subtitle-1">Related:</span>
-                    <component :is="renderMoveRefs(file.description?.related)" />
-                  </p>
-                </v-card-text>
-              </v-card>
-            </v-hover>
+            <!-- <v-hover v-slot="{ isHovering, props }"> -->
+            <v-card variant="flat" class="pa-0 ma-0">
+              <v-card-title class="text-h5 text-center" :id="file.move">
+                {{ file.move }}
+              </v-card-title>
+              <my-lazy class="video-card">
+                <video-player :src="`${config.public.mediaUrl}${file.name}`" loop controls autoplay="muted" responsive
+                  :playbackRate="1" :enableSmoothSeeking="true" fill playsinline
+                  @ready="$event.target.player.userActive(false);" />
+              </my-lazy>
+              <!-- data-setup='{ "loadingSpinner": false }' -->
+              <!-- :children="[{loadingSpinner: false}]" -->
+              <!-- :src="`${mediaUrl}${file.name}`"  -->
+              <v-card-text v-if="file.description">
+                <p v-if="file.description?.text" v-html="file.description?.text"></p>
+                <p v-if="file.description?.related">
+                  <span class="text-subtitle-1">Related:</span>
+                  <component :is="renderMoveRefs(file.description?.related)" />
+                </p>
+              </v-card-text>
+              <v-card-actions>
+
+                <v-menu location="right center" transition="slide-x-transition" :offset="6">
+                  <template v-slot:activator="{ props }">
+                    <v-chip v-bind="props" :color="{new: 'primary', undefined: 'primary', learning: 'deep-purple-lighten-1', review: 'success'}[movesState[`move-${file.move}`]?.state]" variant="flat" density="compact">
+                      {{ movesState[`move-${file.move}`]?.state || "new" }}
+                    </v-chip>
+                  </template>
+
+                  <v-card>
+                    <v-chip-group variant="flat" @update:modelValue="updateMoveState([{ key: `move-${file.move}`, value: { state: $event } }])">
+                      <v-chip class="bg-primary" value="new" density="compact">
+                        new
+                      </v-chip>
+                      <v-chip class="bg-deep-purple-lighten-1" value="learning" density="compact">
+                        learning
+                      </v-chip>
+                      <v-chip class="bg-success" value="review" density="compact">
+                        review
+                      </v-chip>
+                    </v-chip-group>
+                  </v-card>
+
+                </v-menu>
+              </v-card-actions>
+            </v-card>
+            <!-- </v-hover> -->
           </v-col>
         </v-row>
       </v-container>
@@ -136,9 +157,8 @@ reloadAll()
           </v-card-title>
           <!-- <my-lazy class="video-card"> -->
           <div style="width: 50dvw; aspect-ratio: 1;">
-            <video-player
-              :src="`${mediaUrl}${menuMove}.webm`"
-              loop controls autoplay="muted" responsive :playbackRate="1" :enableSmoothSeeking="true" fill playsinline
+            <video-player :src="`${config.public.mediaUrl}${menuMove}.webm`" loop controls autoplay="muted" responsive
+              :playbackRate="1" :enableSmoothSeeking="true" fill playsinline
               @ready="$event.target.player.userActive(false)" />
           </div>
           <!-- </my-lazy> -->
@@ -158,5 +178,12 @@ reloadAll()
 <style scoped>
 .video-card {
   aspect-ratio: 1;
+}
+</style>
+
+<style>
+.vjs-loading-spinner,
+.vjs-big-play-button {
+  display: none !important;
 }
 </style>

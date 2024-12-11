@@ -3,8 +3,14 @@ import yaml from "@rollup/plugin-yaml";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["vuetify-nuxt-module"],
+  modules: ["vuetify-nuxt-module", "nuxt-lodash"],
   ssr: false,
+  runtimeConfig: {
+    public: {
+      mediaUrl: "https://media.githubusercontent.com/media/stas-sl/salsa-moves/refs/heads/main/media/moves/",
+      storeUrl: "https://salsa-moves.curious.by/"
+    }
+  },
   app: {
     buildAssetsDir: "/nuxt/",
     head: {
@@ -21,5 +27,9 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [yaml()]
+  },
+  lodash: {
+    prefix: "_",
+    upperAfterPrefix: false,
   }
 });
