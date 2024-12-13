@@ -19,7 +19,10 @@ export const useStore = () => {
       review: moves.value.filter(x => movesState.value[`move-${x.move}`]?.state == 'review').length
     }
   })
-
+  const userSettings = computed(
+    () => movesState.value.settings
+  )
+  
   const loadMoves = async () => {
     moves.value = files.map((f) => ({
       ...f,
@@ -31,6 +34,9 @@ export const useStore = () => {
   const loadMovesState = async () => {
     let { data } = await $fetch(`${config.public.storeUrl}load?uid=${uid.value}`)
     movesState.value = _fromPairs(data.map(({ key, value }) => [key, JSON.parse(value)]))
+    if (!Array.isArray(movesState.value?.settings?.practiceOptions?.states)) {
+      _set(movesState.value, 'settings.practiceOptions.states', ['learning', 'review'])
+    }
   }
 
   const updateMoveState = async (moves) => {
@@ -44,7 +50,7 @@ export const useStore = () => {
   }
 
   return {
-    uid, moves, movesState, movesCounts,
+    uid, moves, movesState, movesCounts, userSettings,
     loadMoves, loadMovesState, updateMoveState
   }
 }
