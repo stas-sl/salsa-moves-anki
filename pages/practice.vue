@@ -58,7 +58,7 @@ const v = useTemplateRef('v')
             <!-- <div class="flex-grow-1"> -->
               <video-player :src="`${config.public.mediaUrl}${currentMove?.name}`" loop controls autoplay="muted"
                 responsive :playbackRate="1" :enableSmoothSeeking="true" playsinline fill
-                @loadedmetadata1="$event.target.player.userActive(false); v.style.aspectRatio = `${$event.target.player.videoWidth()} / ${$event.target.player.videoHeight()}`" v-if="answerVisible" />
+                @loadedmetadata="$event.target.player.userActive(false); v.style.aspectRatio = `${$event.target.player.videoWidth()} / ${$event.target.player.videoHeight()}`" v-if="answerVisible" />
             <!-- </div> -->
           </v-card-item>
           <v-card-actions class="justify-center pa-0">
