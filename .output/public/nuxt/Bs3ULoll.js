@@ -1,0 +1,1 @@
+import{o as s,c as o,a as t,ai as c,ak as a}from"./BghwnaRZ.js";import{_ as r}from"./DlAUqK2U.js";const n={class:"c1"},_=["src"],i={__name:"test3",setup(l){const e=a();return(p,m)=>(s(),o("div",n,[t("video",{src:`${c(e).public.mediaUrl}s043.webm`,loop:"",fill:"",controls:""},null,8,_)]))}},u=r(i,[["__scopeId","data-v-619c7e35"]]);export{u as default};

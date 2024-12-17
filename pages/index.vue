@@ -137,6 +137,7 @@ reloadAll()
                 {{ file.move }}
               </v-card-title>
               <my-lazy class="video-card">
+                <!-- <video :src="`${config.public.mediaUrl}${file.name}`" loop controls autoplay playsinline/> -->
                 <video-player :src="`${config.public.mediaUrl}${file.name}`" loop controls autoplay="muted" responsive
                   :playbackRate="1" :enableSmoothSeeking="true" fill playsinline
                   @ready="$event.target.player.userActive(false);" />

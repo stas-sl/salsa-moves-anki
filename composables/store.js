@@ -7,7 +7,9 @@ export const useStore = () => {
   const config = useRuntimeConfig()
   const uid = useState('uid', () => {
     if (!localStorage.getItem("uid")) {
-      localStorage.setItem("uid", crypto.randomUUID());
+      if (crypto?.randomUUID) {
+        localStorage.setItem("uid", crypto.randomUUID());
+      }
     }
     return localStorage.getItem("uid");
   })
