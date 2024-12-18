@@ -1,5 +1,5 @@
 <script setup>
-import { useMagicKeys, whenever } from '@vueuse/core'
+import { useMagicKeys, whenever, onKeyStroke } from '@vueuse/core'
 
 const { uid, moves, movesState, movesCounts,
   userSettings, updateMoveState } = useStore()
@@ -14,6 +14,8 @@ const selectRandomMove = () => {
   currentMove.value = candidateMoves[Math.floor(Math.random() * candidateMoves.length)]
 }
 
+let isSeeking = false;
+
 const { space } = useMagicKeys({
   passive: false,
   onEventFired(e) {
@@ -21,6 +23,17 @@ const { space } = useMagicKeys({
       e.preventDefault()
   },
 })
+
+const { comma, period, keyP, digit1, digit2, digit3 } = useMagicKeys()
+
+function waitForSeeked() {
+  return new Promise((resolve) => {
+    player.value.$el.player.one('seeked', () => {
+      resolve();
+    });
+  });
+}
+
 whenever(space, () => {
   if (answerVisible.value) {
     selectRandomMove()
@@ -29,11 +42,59 @@ whenever(space, () => {
   }
 })
 
+whenever(keyP, () => {
+  if (answerVisible.value) {
+    const p = player.value.$el.player
+    if (p.paused())
+      p.play()
+    else
+      p.pause()
+  }
+})
+
+whenever(digit1, () => {
+  if (answerVisible.value) {
+    updateMoveState([{ key: `move-${currentMove.value?.move}`, value: { state: 'new' } }])
+  }
+})
+whenever(digit2, () => {
+  if (answerVisible.value) {
+    updateMoveState([{ key: `move-${currentMove.value?.move}`, value: { state: 'learning' } }])
+  }
+})
+whenever(digit3, () => {
+  if (answerVisible.value) {
+    updateMoveState([{ key: `move-${currentMove.value?.move}`, value: { state: 'review' } }])
+  }
+})
+
+onKeyStroke(',', async () => {
+  if (answerVisible.value && !isSeeking) {
+    isSeeking = true
+    const p = player.value.$el.player
+    p.pause()
+    p.currentTime(p.currentTime() - 1 / 30)
+    await waitForSeeked();
+    isSeeking = false
+  }
+})
+
+onKeyStroke('.', async () => {
+  if (answerVisible.value && !isSeeking) {
+    isSeeking = true
+    const p = player.value.$el.player
+    p.pause()
+    p.currentTime(p.currentTime() + 1 / 30)
+    await waitForSeeked();
+    isSeeking = false
+  }
+})
+
 onBeforeMount(() => {
   selectRandomMove()
 })
 
-const v = useTemplateRef('v')
+const player = useTemplateRef('player')
 
 </script>
 
@@ -55,17 +116,42 @@ const v = useTemplateRef('v')
         <v-card class="fill-height d-flex flex-column w-100">
           <v-card-title class="pa-0 text-h2 text-center">{{ currentMove?.move }}</v-card-title>
           <v-card-item class="pa-0 flex-grow-1 video-card-item">
-            <!-- <div class="flex-grow-1"> -->
-              <video-player :src="`${config.public.mediaUrl}${currentMove?.name}`" loop controls autoplay="muted"
-                responsive :playbackRate="1" :enableSmoothSeeking="true" playsinline fill
-                @loadedmetadata="$event.target.player.userActive(false); v.style.aspectRatio = `${$event.target.player.videoWidth()} / ${$event.target.player.videoHeight()}`" v-if="answerVisible" />
-            <!-- </div> -->
+            <video-player :src="`${config.public.mediaUrl}${currentMove?.name}`" :playbackRate="1"
+              :enableSmoothSeeking="true" playsinline fill loop autoplay="muted" responsive ref="player"
+              @loadedmetadata="$event.target.player.userActive(false); $event.target.player.controls(true);"
+              v-if="answerVisible" />
           </v-card-item>
           <v-card-actions class="justify-center pa-0">
             <v-btn @click="answerVisible = true" color="primary" class="my-2" v-if="!answerVisible" variant="flat">Show
-              answer</v-btn>
-            <v-btn @click="selectRandomMove()" color="primary" class="my-2" v-if="answerVisible"
-              variant="flat">Next</v-btn>
+              answer (Space)</v-btn>
+            <v-menu location="top center" transition="slide-y-transition" :offset="2" v-if="answerVisible">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props"
+                  :color="{ new: 'primary', undefined: 'primary', learning: 'deep-purple-lighten-1', review: 'success' }[movesState[`move-${currentMove?.move}`]?.state]"
+                  variant="flat" density="compact">
+                  {{ movesState[`move-${currentMove?.move}`]?.state || "new" }}
+                </v-chip>
+              </template>
+
+              <v-card style="background-color: rgba(var(--v-theme-surface), 0.8)">
+                <v-chip-group variant="flat" direction="vertical"
+                  @update:modelValue="updateMoveState([{ key: `move-${currentMove?.move}`, value: { state: $event } }])">
+                  <v-chip class="bg-primary mx-2" value="new" density="compact">
+                    new (1)
+                  </v-chip>
+                  <v-chip class="bg-deep-purple-lighten-1 mx-2" value="learning" density="compact">
+                    learning (2)
+                  </v-chip>
+                  <v-chip class="bg-success mx-2" value="review" density="compact">
+                    review (3)
+                  </v-chip>
+                </v-chip-group>
+              </v-card>
+
+            </v-menu>
+
+            <v-btn @click="selectRandomMove()" color="primary" class="my-2" v-if="answerVisible" variant="flat">Next
+              (space)</v-btn>
           </v-card-actions>
         </v-card>
       </v-container>
@@ -78,5 +164,9 @@ const v = useTemplateRef('v')
   align-self: stretch;
   display: flex;
   flex-direction: column;
+}
+
+.video-js {
+  background-color: unset;
 }
 </style>

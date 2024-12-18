@@ -1,1 +1,0 @@
-import{o as s,c as o,a as t,ai as c,ak as a}from"./Ce4lu0na.js";const n={class:"container"},r=["src"],m={__name:"test5",setup(i){const e=a();return(_,l)=>(s(),o("div",n,[t("video",{src:`${c(e).public.mediaUrl}s002.webm`,loop:"",controls:""},null,8,r)]))}};export{m as default};
