@@ -3,7 +3,7 @@ import yaml from "@rollup/plugin-yaml";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  modules: ["vuetify-nuxt-module", "nuxt-lodash"],
+  modules: ["vuetify-nuxt-module", "nuxt-lodash", "@nuxtjs/device"],
   ssr: false,
   runtimeConfig: {
     public: {

@@ -154,31 +154,32 @@ reloadAll()
 
               <v-card-actions>
                 <my-lazy>
-                  <v-menu location="right center" transition="slide-x-transition" :offset="6">
-                    <template v-slot:activator="{ props }">
-                      <v-chip v-bind="props"
-                        :color="{ new: 'primary', undefined: 'primary', learning: 'deep-purple-lighten-1', review: 'success' }[movesState[`move-${file.move}`]?.state]"
-                        variant="flat" density="compact">
-                        {{ movesState[`move-${file.move}`]?.state || "new" }}
-                      </v-chip>
-                    </template>
+                  <div>
+                    <v-menu location="right center" transition="slide-x-transition" :offset="6">
+                      <template v-slot:activator="{ props }">
+                        <v-chip v-bind="props"
+                          :color="{ new: 'primary', undefined: 'primary', learning: 'deep-purple-lighten-1', review: 'success' }[movesState[`move-${file.move}`]?.state]"
+                          variant="flat" density="compact">
+                          {{ movesState[`move-${file.move}`]?.state || "new" }}
+                        </v-chip>
+                      </template>
 
-                    <v-card>
-                      <v-chip-group variant="flat"
-                        @update:modelValue="updateMoveState([{ key: `move-${file.move}`, value: { state: $event } }])">
-                        <v-chip class="bg-primary" value="new" density="compact">
-                          new
-                        </v-chip>
-                        <v-chip class="bg-deep-purple-lighten-1" value="learning" density="compact">
-                          learning
-                        </v-chip>
-                        <v-chip class="bg-success" value="review" density="compact">
-                          review
-                        </v-chip>
-                      </v-chip-group>
-                    </v-card>
-
-                  </v-menu>
+                      <v-card>
+                        <v-chip-group variant="flat"
+                          @update:modelValue="updateMoveState([{ key: `move-${file.move}`, value: { state: $event } }])">
+                          <v-chip class="bg-primary" value="new" density="compact">
+                            new
+                          </v-chip>
+                          <v-chip class="bg-deep-purple-lighten-1" value="learning" density="compact">
+                            learning
+                          </v-chip>
+                          <v-chip class="bg-success" value="review" density="compact">
+                            review
+                          </v-chip>
+                        </v-chip-group>
+                      </v-card>
+                    </v-menu>
+                  </div>
                 </my-lazy>
               </v-card-actions>
             </v-card>

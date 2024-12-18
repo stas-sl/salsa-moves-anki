@@ -116,7 +116,8 @@ const player = useTemplateRef('player')
     <v-main>
       <v-container fluid class="pa-0 fill-height">
         <v-card class="fill-height d-flex flex-column w-100">
-          <v-card-title class="pa-0 text-h2 text-center">{{ currentMove?.move }}</v-card-title>
+          <v-card-title class="pa-0 text-h2 text-center">{{ currentMove?.move }}
+          </v-card-title>
           <v-card-item class="pa-0 flex-grow-1 video-card-item">
             <video-player :src="`${config.public.mediaUrl}${currentMove?.name}`" :playbackRate="1"
               :enableSmoothSeeking="true" playsinline fill loop muted preload responsive ref="player"
@@ -124,8 +125,9 @@ const player = useTemplateRef('player')
               v-show="answerVisible" />
           </v-card-item>
           <v-card-actions class="justify-center pa-0">
-            <v-btn @click="answerVisible = true; player?.$el?.player?.play()" color="primary" class="my-2" v-if="!answerVisible" variant="flat">Show
-              answer (Space)</v-btn>
+            <v-btn @click="answerVisible = true; player?.$el?.player?.play()" color="primary" class="my-2"
+              v-if="!answerVisible" variant="flat">Show
+              answer<span v-if="$device.isDesktop">&nbsp;(space)</span></v-btn>
             <v-menu location="top center" transition="slide-y-transition" :offset="2" v-if="answerVisible">
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props"
@@ -152,8 +154,8 @@ const player = useTemplateRef('player')
 
             </v-menu>
 
-            <v-btn @click="selectRandomMove()" color="primary" class="my-2" v-if="answerVisible" variant="flat">Next
-              (space)</v-btn>
+            <v-btn @click="selectRandomMove()" color="primary" class="my-2" v-if="answerVisible"
+              variant="flat">Next<span v-if="$device.isDesktop">&nbsp;(space)</span></v-btn>
           </v-card-actions>
         </v-card>
       </v-container>
