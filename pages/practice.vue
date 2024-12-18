@@ -9,6 +9,7 @@ const currentMove = ref(null)
 const answerVisible = ref(false)
 const selectRandomMove = () => {
   answerVisible.value = false
+  player?.value?.$el?.player?.pause()
   const candidateMoves = moves.value.filter(x =>
     userSettings.value.practiceOptions.states.includes(movesState.value[`move-${x.move}`]?.state || 'new'))
   currentMove.value = candidateMoves[Math.floor(Math.random() * candidateMoves.length)]
@@ -39,6 +40,7 @@ whenever(space, () => {
     selectRandomMove()
   } else {
     answerVisible.value = true
+    player?.value?.$el?.player?.play()
   }
 })
 
@@ -117,12 +119,12 @@ const player = useTemplateRef('player')
           <v-card-title class="pa-0 text-h2 text-center">{{ currentMove?.move }}</v-card-title>
           <v-card-item class="pa-0 flex-grow-1 video-card-item">
             <video-player :src="`${config.public.mediaUrl}${currentMove?.name}`" :playbackRate="1"
-              :enableSmoothSeeking="true" playsinline fill loop autoplay="muted" responsive ref="player"
+              :enableSmoothSeeking="true" playsinline fill loop muted preload responsive ref="player"
               @loadedmetadata="$event.target.player.userActive(false); $event.target.player.controls(true);"
-              v-if="answerVisible" />
+              v-show="answerVisible" />
           </v-card-item>
           <v-card-actions class="justify-center pa-0">
-            <v-btn @click="answerVisible = true" color="primary" class="my-2" v-if="!answerVisible" variant="flat">Show
+            <v-btn @click="answerVisible = true; player?.$el?.player?.play()" color="primary" class="my-2" v-if="!answerVisible" variant="flat">Show
               answer (Space)</v-btn>
             <v-menu location="top center" transition="slide-y-transition" :offset="2" v-if="answerVisible">
               <template v-slot:activator="{ props }">
