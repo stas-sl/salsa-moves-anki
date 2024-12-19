@@ -120,7 +120,7 @@ const player = useTemplateRef('player')
           </v-card-title>
           <v-card-item class="pa-0 flex-grow-1 video-card-item">
             <video-player :src="`${config.public.mediaUrl}${currentMove?.name}`" :playbackRate="1"
-              :enableSmoothSeeking="true" playsinline fill loop muted preload responsive ref="player"
+              :enableSmoothSeeking="true" playsinline fill loop muted preload="auto" responsive ref="player"
               @loadedmetadata="$event.target.player.userActive(false); $event.target.player.controls(true);"
               v-show="answerVisible" />
           </v-card-item>

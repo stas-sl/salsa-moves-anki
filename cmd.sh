@@ -37,4 +37,4 @@ python3 -c "import sys; import os; import json; print(json.dumps([{'name': f} fo
 
 for file in raw/*; do ffmpeg -y -i "$file"  -vf "scale='if(gt(a,1),720,-2)':'if(gt(a,1),-2,720)'" -r 30 -c:v libvpx-vp9 -crf 41 -b:v 0 -c:a libopus -b:a 128k -row-mt 1 "webm/$(basename "${file%.*}.webm")"; done
 
-for file in raw/*; do ffmpeg -y -i "$file"  -vf "scale='if(gt(a,1),720,-2)':'if(gt(a,1),-2,720)'" -r 30 -c:v libx265 -g 15 -tag:v hvc1 -crf 28 "encoded_x265/$(basename "${file%.*}.mp4")"; done
+for file in raw/*; do ffmpeg -y -i "$file"  -vf "scale='if(gt(a,1),720,-2)':'if(gt(a,1),-2,720)'" -r 30 -c:v libx265 -g 15 -tag:v hvc1 -crf 25 -preset slow "encoded_x265_crf25_preset_slow/$(basename "${file%.*}.mp4")"; done
